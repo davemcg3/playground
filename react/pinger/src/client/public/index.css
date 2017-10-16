@@ -1,0 +1,21 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+#app {
+  max-width: 1024px;
+  margin: auto;
+  position: relative;
+  height: 100%;
+}
+
+#fab {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+}
+
+.cardtext > svg {
+  vertical-align: -28%;
+  margin-right: 1rem;
+}
