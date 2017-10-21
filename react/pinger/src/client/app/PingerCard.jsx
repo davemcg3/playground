@@ -4,21 +4,20 @@ import {Button} from 'react-toolbox/lib/button';
 
 class PingerCard extends React.Component {
 
-  statics: {
-    PENDING: 0,
-    UP: 1,
-    DOWN: 2
-  }
-
   constructor(props) {
     super(props);
+    this.status = {
+      PENDING: 0,
+      UP: 1,
+      DOWN: 2
+    }
     this.state = {
-      status : this.PENDING,
+      status : this.status.PENDING,
       color : 'grey',
-      siteName : props.siteName,
-      siteUrl : props.siteUrl,
-      method : props.method,
-      paylaod : null,
+      siteName : props.settings.siteName,
+      siteUrl : props.settings.siteUrl,
+      method : props.settings.method,
+      payload : props.settings.payload,
       lastChecked : 'N/A'
     };
     this.ping = this.ping.bind(this);
@@ -29,7 +28,13 @@ class PingerCard extends React.Component {
 
   ping () {
     var self = this;
-  	this.getCORS('https://coordinates.hugthecenterline.com', function(request){
+    // on load setting state here causes an error because the component isn't mounted yet
+    if (this.state.color !== 'grey'){
+      this.setState({status: this.status.PENDING, color: 'grey'});
+    }
+    //console.log(self.state);
+
+  	this.getCORS(self.state.siteUrl, function(request){
       //failed on a named function callback that request wasn't defined, but
       //passing an anonymous function that calls the named function is fine
       //set the 'this' context outside of the callback and let the binding
@@ -43,22 +48,20 @@ class PingerCard extends React.Component {
     var xhr = new XMLHttpRequest();
     if (!('withCredentials' in xhr)) xhr = new XDomainRequest(); // fix IE8/9
     xhr.open('GET', url);
-    xhr.onload = success;
+    xhr.onloadend = success;
     xhr.send();
-    return xhr;
 	}
 
   handleResponse(request) {
-    //console.log('handling response')
+    console.log('handling response for ' + this.state.siteName)
+    console.log(request);
     var response = request.currentTarget || request.target.responseText; //TODO: double check what you get with IE. I think the || is not what I want
     if (response.readyState==4 && response.status==200) {
       //success
-      this.setState({status: this.UP});
-      this.setState({color: 'green'});
+      this.setState({status: this.status.UP, color: 'green'});
     } else {
       //failure
-      this.setState({status: this.DOWN});
-      this.setState({color: 'red'});
+      this.setState({status: this.status.DOWN, color: 'red'});
     }
     this.setState({lastChecked: new Date().toLocaleString()})
   }
@@ -68,8 +71,8 @@ class PingerCard extends React.Component {
       <div>
         <Card style={{width: '33%'}}>
           <CardTitle
-            title="Headed Out"
-            subtitle="https://coordinates.hugthecenterline.com"
+            title={this.state.siteName}
+            subtitle={this.state.siteUrl}
           />
           <CardText>
             <div className="cardtext">

@@ -23,21 +23,14 @@ class Configurator extends React.Component {
   }
 
   loadOptions (options) {
-    console.log(this.state);
-    console.log(options);
     for (var key in options) {
       var temp = { [key]: options[key]};
-      console.log(temp);
       this.setState(temp);
     }
-    console.log(this.state);
-    console.log(this.state.siteName);
-    console.log(this.state);
   }
 
   handleToggle () {
     this.setState({active: !this.state.active});
-    //this.loadOptions({siteName: 'booga '})
   }
 
   handleChange (name, value) {
@@ -45,8 +38,8 @@ class Configurator extends React.Component {
   };
 
   saveOptions () {
-    console.log(this.state);
-    //emit this state up the chain so it can be handled by the PingerCard
+    //emit this state up the chain so it can be handled by the app
+    this.props.callback(this.state);
     this.setState({
       active: !this.state.active
     });
@@ -55,12 +48,11 @@ class Configurator extends React.Component {
   render() {
     const actions = [
       { label: "Cancel", onClick: this.handleToggle },
-      { label: "Save", onClick: this.saveOptions }
+      { label: "Save", onClick: this.saveOptions.bind(this) }
     ];
 
     return (
       <div>
-        <Button label='Show my dialog' onClick={this.handleToggle} />
         <Dialog
           actions={actions}
           active={this.state.active}
