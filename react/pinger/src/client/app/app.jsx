@@ -9,33 +9,39 @@ import Fab from './Fab.jsx'
 class App extends React.Component {
   constructor(props) {
     super(props);
+    var nextId = 0;
     this.state = {
       cards: [
         {
           siteName: 'Headed Out',
           siteUrl: 'https://coordinates.hugthecenterline.com',
           method: 'get',
-          payload: null
+          payload: null,
+          id: nextId++
         },
         {
           siteName: '404 from real server failed',
           siteUrl: 'https://coordinates.hugthecenterline.com/booga',
           method: 'get',
-          payload: null
+          payload: null,
+          id: nextId++
         },
         {
           siteName: '404 from no domain',
           siteUrl: 'https://thereisnourlhere.com',
           method: 'get',
-          payload: null
+          payload: null,
+          id: nextId++
         },
         {
           siteName: 'CORS blocked',
           siteUrl: 'https://www.google.com',
           method: 'get',
-          payload: null
+          payload: null,
+          id: nextId++
         }
-      ]
+      ],
+      nextId: nextId,
     }
     this.addCard = this.addCard.bind(this);
   }
@@ -46,7 +52,8 @@ class App extends React.Component {
       siteName: settings.siteName,
       siteUrl: settings.siteUrl,
       method: settings.method,
-      payload: settings.payload
+      payload: settings.payload,
+      id: this.state.nextId++
     }
     ])});
   }
@@ -59,13 +66,15 @@ class App extends React.Component {
           </Navigation>
         </AppBar>
 
-        <p>Add a site to ping by clicking the button in the bottom right.</p>
+        <p style={{display: "none"}}>Add a site to ping by clicking the button in the bottom right.</p>
         <Fab callback={this.addCard} />
-        {
-          this.state.cards.map((item, i) => (
-            <PingerCard key={i} settings={item} />
-          ))
-        }
+        <div style={{width: "100%"}}>
+          {
+            this.state.cards.map((item, i) => (
+              <PingerCard key={i} settings={item} />
+            ))
+          }
+        </div>
       </div>
     );
   }
