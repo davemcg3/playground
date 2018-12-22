@@ -42,6 +42,12 @@ class App extends React.Component {
         }
       ],
       nextId: nextId,
+      cryptoCards: [
+        {
+          name: 'BTC',
+          id: nextId++
+        }
+      ]
     }
     this.addCard = this.addCard.bind(this);
   }
@@ -72,6 +78,9 @@ class App extends React.Component {
           {
             this.state.cards.map((item, i) => (
               <PingerCard key={i} settings={item} />
+            ))
+            this.state.cryptoCards.map((item, i) => (
+              <CryptoCard key={i} settings={item} />
             ))
           }
         </div>
